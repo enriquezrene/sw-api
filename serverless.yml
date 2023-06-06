@@ -1,0 +1,17 @@
+plugins:
+  - serverless-offline
+
+service: sw-api
+frameworkVersion: '3'
+
+provider:
+  httpApi:
+    cors: true
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  api:
+    handler: index.handler
+    events:
+      - httpApi: '*'
