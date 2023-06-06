@@ -14,12 +14,14 @@ addUser = async ({username, password, balance}) => {
 }
 
 login = async (username, password) => {
-  const userInfo = await knex.select().from("user").where({
+  const userInfo = await knex.select().from("user")
+  .where({
     username,
     password,
     status: 'active',
     deleted_at: null
-  }).first()
+  })
+  .first()
   if (!userInfo) {
     throw new Error('Login failed')
   }

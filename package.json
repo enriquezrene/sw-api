@@ -4,6 +4,7 @@
   "description": "",
   "dependencies": {
     "@faker-js/faker": "^8.0.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "faker": "^5.5.3",
@@ -19,9 +20,8 @@
   },
   "scripts": {
     "test": "NODE_ENV=test yarn knex migrate:latest && NODE_ENV=test knex seed:run && yarn run jest --runInBand",
-    "prepare": "yarn knex migrate:latest && knex seed:run",
-    "prepare:prod": "NODE_ENV=production node init-db.js && NODE_ENV=production yarn knex migrate:latest && NODE_ENV=production knex seed:run",
-    "prepare:deva": "NODE_ENV=development node init-db.js && NODE_ENV=development yarn knex migrate:latest && NODE_ENV=development knex seed:run",
-    "prepare:dev": "NODE_ENV=development node init-db.js"
+    "prepare:prod": "NODE_ENV=production yarn knex migrate:latest && NODE_ENV=production knex seed:run",
+    "prepare:test": "NODE_ENV=test yarn knex migrate:latest && NODE_ENV=test knex seed:run",
+    "prepare:dev": "NODE_ENV=development yarn knex migrate:latest && NODE_ENV=development knex seed:run"
   }
 }

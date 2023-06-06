@@ -17,16 +17,95 @@ Make sure you have installed docker-compose
 docker-compose up postgres postgres-test
 ```
 
-2. Install the dependencies
+2. Make sure you have installed node 18.15.0
+If you don't please follow this link http://nvm.sh/
+
+
+3. Install the dependencies
 ```sh
 yarn install
 ```
+
+4. Create a database named `challenge` using any database client
+
+5. Rename the existing .env.example file as .env and replace the values with the correct ones
+JWT_SECRET=<feel free to use any long random string here>
+DB_USER=<see docker compose>
+DB_PASSWORD=<see docker compose>
+DB_HOST=localhost
+DB_PORT=5432
+DB_PORT_TEST=5433
+DB_NAME=challenge
+
  
-5. Run the db
-Get the db ready
+5. Get the db ready
 ```ssh
 yarn prepare:dev
 ```
+
+6. Run the app locally
+```sh
+serverless offline
+```
+
+7. Play with the API
+There are 3 users you can play with
+
+a@foo.com / 1234567890 has a balance=999999999
+user-no-balance@foo.com / 1234567890 has no balance, so he can login but you can not perform any operation
+wrong@foo.com / 1234567890 has balance but it is inactive so you can not really use it
+
+## Grab a token
+```sh
+curl --location 'http://localhost:3000/login' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "username": "<username>",
+    "password":"<pwd>"
+}'
+```
+
+## Perform operations
+```sh
+curl --location 'http://localhost:3000/operations' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <USE YOUR TOKEN HERE>' \
+--data '{
+    "operation": "<OperationName>",
+    "params": {
+        "a":###,
+        "b":###
+    }
+}'
+```
+
+The operations and costs in the db are:
+```json    
+    {type: 'sum', cost: 10},
+    {type: 'subtract', cost: 11},
+    {type: 'multiply', cost: 12},
+    {type: 'divide', cost: 13},
+    {type: 'squareRoot', cost: 14},
+    {type: 'randomString', cost: 15}, 
+```
+
+and params `a` and `b` must be numbers
+
+If you want to play with the app in production please use this URL https://azx2495nd9.execute-api.us-east-1.amazonaws.com
+
+## Query user records
+```sh
+curl --location 'http://localhost:3000/records?page=1&items=5' \
+--header 'Authorization: Bearer <USE YOUR TOKEN HERE>' \
+--data ''
+```
+
+8. Unit tests
+All tests are written in jest, to make them run 
+```sh
+yarn test
+```
+
 
 
 # Serverless Framework Node Express API on AWS

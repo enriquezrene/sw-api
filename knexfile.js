@@ -1,12 +1,13 @@
+require('dotenv').config()
 module.exports = {
   test: {
     client: 'pg',
     connection: {
-      database: 'challenge',
-      user: 'user',
-      password: 'pass',
-      port: 5433,
-      host: 'localhost',
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT_TEST,
+      host: process.env.DB_HOST
     },
     pool: {
       min: 2,
@@ -20,11 +21,11 @@ module.exports = {
   development: {
     client: 'pg',
     connection: {
-      database: 'challenge',
-      user: 'user',
-      password: 'pass',
-      port: 5432,
-      host: 'localhost',
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT,
+      host: process.env.DB_HOST
     },
     pool: {
       min: 2,
@@ -38,11 +39,11 @@ module.exports = {
   production: {
     client: 'pg',
     connection: {
-      database: 'zdvozcri',
-      user: 'zdvozcri',
-      password: 'exjgGSsF8v3C4HRYTXEFZBK8PsYbgEqu',
-      port: 5432,
-      host: 'rajje.db.elephantsql.com'
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT,
+      host: process.env.DB_HOST
     },
     pool: {
       min: 2,

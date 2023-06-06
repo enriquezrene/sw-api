@@ -1,6 +1,6 @@
 const {knex} = require("../database/db-connection");
 
-const getUserRecords = async (username, perPage = 10, currentPage = 1) => {
+const getUserRecords = async (username, perPage, currentPage) => {
   const userRecords = await knex('record as r')
     .join('user as u', 'u.id', 'r.user_id')
     .join('operation as o', 'o.id', 'r.operation_id')

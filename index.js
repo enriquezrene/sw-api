@@ -3,11 +3,20 @@ const express = require("express");
 const {knex} = require("./database/db-connection");
 const {performOperation} = require("./operations/operations.service");
 const {sum, randomString, squareRoot, divide, multiply, subtract} = require("./operations/operations");
-const {request} = require("express");
 const {login, getUserInfo} = require("./users/users.service");
-const {getUserRecords} = require("./records/records.service");
+const {getUserRecords, removeRecord} = require("./records/records.service");
 const {validateToken} = require("./security/auth.service");
+const cors = require('cors')
 const app = express();
+
+var corsOptions = {
+  "origin": "*",
+  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+  "preflightContinue": false,
+  "optionsSuccessStatus": 200
+}
+
+app.options('*', cors(corsOptions))
 
 app.use(function (req, res, next) {
   const bearerToken = req['apiGateway']['event']['headers']['authorization'] ?? req['apiGateway']['event']['headers']['Authorization']
@@ -76,7 +85,7 @@ app.post("/operations", async (req, res, next) => {
   }
 });
 
-app.post("/login", async (req, res, next) => {
+app.post("/login", cors(corsOptions), async (req, res, next) => {
   const requestBody = getRequestBody(req)
   try {
     const token = await login(requestBody.username, requestBody.password)
@@ -100,12 +109,28 @@ app.get("/profile", async (req, res, next) => {
 });
 
 app.get("/records", async (req, res, next) => {
-  const queryParams = getQueryParams(req)
+  const queryParams = getQueryParams(req) || {}
+  const itemsPerPage = Number(queryParams['items'] || 10)
+  const currentPage = Number(queryParams['page'] || 1)
   const username = req.user.username
-  const records = await getUserRecords(username, Number(queryParams['items']), Number(queryParams['page']))
+  const records = await getUserRecords(username, itemsPerPage, currentPage)
   return res.status(200).json({
     records,
   });
+});
+
+app.delete("/records", async (req, res, next) => {
+  const queryParams = getQueryParams(req) || {}
+  const recordId = queryParams['recordId']
+  if(recordId){
+    await removeRecord(recordId)
+    return res.status(200).json({
+      message: 'OK',
+    });  
+  }
+  return res.status(200).json({
+    message: 'Please provide a recordId',
+  })
 });
 
 app.use((req, res, next) => {
